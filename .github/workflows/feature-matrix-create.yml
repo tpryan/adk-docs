@@ -1,4 +1,4 @@
-name: Run Go Program
+name: Run Go Program and Create PR
 on:
   push:
     branches:
@@ -30,3 +30,18 @@ jobs:
       working-directory: ./adk-docs-features
       env:
         GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+
+    - name: Prepare PR content
+      run: |
+        mkdir -p docs/features
+        mv adk-docs-features/output_1.md docs/features/index.md
+
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v6
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        commit-message: "feat: propose new documentation"
+        title: "Proposed Documentation Update"
+        body: "This is an auto-generated PR with new documentation."
+        branch: "new-documentation-proposal"
+        delete-branch: true
